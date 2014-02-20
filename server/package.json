@@ -1,0 +1,15 @@
+{
+  "name": "webnode-server",
+  "version": "0.1.1",
+  "description": "Web.Node Cloud Platform Server",
+  "main": "entry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Feifei Hang <l.daniel.hung@gmail.com> (http://feifeihang.github.io/)",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "~0.6.2",
+    "socket.io-stream": "~0.5.2"
+  }
+}
