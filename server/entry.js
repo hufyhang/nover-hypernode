@@ -94,7 +94,8 @@ exports.__socket = function (server, data) {
         socket.emit('stdout', clearSreen);
         socket.emit('stdout', 'HyperNode Cloud Environment (version: ' + VERSION
                     + ')\nWelcome, ' + data.user + '!\nServer time: ' +
-                      (new Date()).toString() + '\n');
+                      (new Date()).toString() +
+                      '\nType "help" for user manual.\n');
         socket.emit('ok.login', USER_DIR);
       }
     });
