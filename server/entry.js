@@ -92,7 +92,7 @@ exports.__socket = function (server, data) {
         socket.emit('terminate');
       } else {
         socket.emit('stdout', clearSreen);
-        socket.emit('stdout', 'Web.Node Cloud Platform (version: ' + VERSION
+        socket.emit('stdout', 'HyperNode Cloud Platform (version: ' + VERSION
                     + ')\nWelcome, ' + data.user + '!\nServer time: ' +
                       (new Date()).toString() + '\n');
         socket.emit('ok.login', USER_DIR);
