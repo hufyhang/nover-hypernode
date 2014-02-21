@@ -1,9 +1,9 @@
-var rl     = require('readline');
+var rl = require('readline');
 var crypto = require('crypto');
 var colors = require('colors');
 var prompt = require('prompt');
-var fs     = require('fs');
-var ss     = require('socket.io-stream');
+var fs = require('fs');
+var ss = require('socket.io-stream');
 
 var iface;
 var ifacePaused;

@@ -1,6 +1,6 @@
 {
   "name": "hypernode-cli",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "HyperNode Cloud Platform CLI",
   "main": "hypernode.js",
   "author": "Feifei Hang <l.daniel.hung@gmail.com> (http://feifeihang.github.io/)",
