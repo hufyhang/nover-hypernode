@@ -1,12 +1,97 @@
-var basis = require('./lib/basis');
-var color = require('colors');
-var rl = require('readline');
+var rl     = require('readline');
+var crypto = require('crypto');
+var colors = require('colors');
+var prompt = require('prompt');
+var fs     = require('fs');
+var ss     = require('socket.io-stream');
 
 var iface;
 var ifacePaused;
 var socket;
 var host = process.argv[2];
 var path = '';
+
+var basis = {
+  // push files to server
+  push: function (path, socket) {
+    'use strict';
+    var stream = ss.createStream();
+    path = path.replace(/^~/, process.env.HOME);
+    ss(socket).emit('push', stream, {name: path});
+    fs.createReadStream(path)
+    .pipe(stream);
+    return true;
+  },
+
+  password: function (callback) {
+    'use strict';
+    prompt.message = '';
+    prompt.delimiter = '';
+
+    prompt.start();
+    prompt.get({
+      properties: {
+        user: {
+          description: 'Username:'.green,
+        },
+        password: {
+          description: 'Password:'.green,
+          hidden: true
+        }
+      }
+    }, callback);
+  },
+
+
+  md5: function (data) {
+    'use strict';
+    return crypto.createHash('md5').update(data).digest('hex');
+  },
+
+  sysCmd: function (cmd, socket) {
+    'use strict';
+    var argv;
+    if (cmd === 'exit') {
+      process.exit(0);
+    }
+
+    // push command
+    argv = cmd.match(/^push\ ?(.+)?$/);
+    if (argv) {
+      var filename = argv[1];
+      if (!filename) {
+        console.error('Usage: push [filename]'.red);
+        socket.emit('empty');
+        return true;
+      } else {
+        basis.push(filename, socket);
+        return true;
+      }
+    }
+
+    // show all tasks
+    if (cmd === 'jobs' || cmd === 'tasks') {
+      socket.emit('task.all');
+      return true;
+    }
+
+    // kill a task
+    argv = cmd.match(/^kill\ ?([0-9]+)?$/);
+    if (argv) {
+      var pid = argv[1];
+      if (!pid) {
+        console.error('Usage: kill [task_pid]'.red);
+        socket.emit('empty');
+        return true;
+      } else {
+        socket.emit('task.kill', pid);
+        return true;
+      }
+    }
+  }
+
+};
+
 
 var sendPassword = function (err, pass) {
   'use strict';
@@ -72,8 +157,8 @@ var toggleReadline = function () {
 /////////////////
 
 if (!host) {
-  console.log('Usage: webnode [WebNode_Server_URL]'.red);
-  console.log('To generate pass phrase: webnode -p [password]'.red);
+  console.log('Usage: hypernode [HyperNode_Server_URL]'.red);
+  console.log('To generate pass phrase: hypernode -p [password]'.red);
   process.exit(0);
 }
 
