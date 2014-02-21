@@ -1,16 +1,24 @@
 {
   "name": "hypernode-cli",
   "version": "0.1.2",
-  "description": "HyperNode Cloud Platform CLI",
-  "main": "hypernode.js",
+  "description": "HyperNode Cloud Platform CLI.",
+  "main": "bin/hypernode.js",
+  "bin": {
+    "hnode": "bin/hypernode.js"
+  },
+  "directories": {
+    "bin": "bin"
+  },
+  "scripts": {
+    "test": "echo 'DONE'"
+  },
+  "keywords": [
+    "Remote",
+    "job server",
+    "WebSockets"
+  ],
   "author": "Feifei Hang <l.daniel.hung@gmail.com> (http://feifeihang.github.io/)",
   "license": "MIT",
-  "bin": {
-    "hnode": "./hypernode.js"
-  },
-  "engines": {
-    "node": ">= 0.8.0"
-  },
   "dependencies": {
     "colors": "~0.6.2",
     "socket.io-stream": "~0.5.2",
