@@ -7,6 +7,8 @@ var prompt = require('prompt');
 var fs = require('fs');
 var ss = require('socket.io-stream');
 
+var VERSION = '0.1.2-pre';
+
 var iface;
 var ifacePaused;
 var socket;
@@ -196,6 +198,7 @@ var toggleReadline = function () {
 /////////////////
 
 if (!host) {
+  console.log('HyperNode CLI '.green + VERSION.green);
   console.log('Usage: hypernode [HyperNode_Server_URL]'.red);
   console.log('To generate pass phrase: hypernode -p [password]'.red);
   process.exit(0);
