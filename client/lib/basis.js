@@ -17,21 +17,6 @@ basis.push = function (path, socket) {
   return true;
 };
 
-basis.prompt = function (path, msg, callback) {
-  'use strict';
-  prompt.message = '';
-  // prompt.message = path;
-  prompt.delimiter = '';
-  prompt.start();
-  prompt.get({
-    properties : {
-      cmd: {
-        description: '$'.green
-      }
-    }
-  }, callback);
-};
-
 basis.password = function (callback) {
   'use strict';
   prompt.message = '';

@@ -1,6 +1,8 @@
 var basis = require('./lib/basis');
 var color = require('colors');
+var rl = require('readline');
 
+var iface;
 var socket;
 var host = process.argv[2];
 var path = '';
@@ -11,14 +13,44 @@ var sendPassword = function (err, pass) {
   socket.emit('login', {user: pass.user, password: password});
 };
 
-var handleCmd = function (err, cmd) {
+var handleCmd = function (cmd) {
   'use strict';
-  var command = cmd.cmd.trim();
+  var command = cmd.trim();
   if (cmd.length !== 0) {
     if (!basis.sysCmd(command, socket)) {
       socket.emit('cmd', {command: command, cwd: path});
     }
   }
+};
+
+var prompt = function () {
+  'use strict';
+  // set up iface (readline) if is undefined
+  if (!iface) {
+    iface = rl.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
+
+    iface.setPrompt('$ '.green);
+
+    // visually indicate closed pipe with ^D
+    // otherwise exiting nested shells is confusing
+    iface.on('close', function () {
+      process.stdout.write('^D\n');
+    });
+
+    // handle ^C like bash
+    iface.on('SIGINT', function () {
+      process.stdout.write('^C');
+      iface.clearLine();
+      // prompt();
+    });
+
+    iface.on('line', handleCmd);
+  }
+
+  iface.prompt();
 };
 
 if (!host) {
@@ -50,12 +82,12 @@ socket.on('terminate', function () {
 socket.on('ok.login', function (data) {
   'use strict';
   path = data;
-  basis.prompt(path, 'cmd', handleCmd);
+  prompt();
 });
 
 socket.on('ok', function () {
   'use strict';
-  basis.prompt(path, 'cmd', handleCmd);
+  prompt();
 });
 
 socket.on('stdout', function (data) {
@@ -67,3 +99,4 @@ socket.on('stderr', function (data) {
   'use strict';
   process.stderr.write(data.toString().red);
 });
+
