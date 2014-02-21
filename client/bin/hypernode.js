@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var rl = require('readline');
 var crypto = require('crypto');
 var colors = require('colors');
