@@ -3,6 +3,7 @@ var color = require('colors');
 var rl = require('readline');
 
 var iface;
+var ifacePaused;
 var socket;
 var host = process.argv[2];
 var path = '';
@@ -23,35 +24,52 @@ var handleCmd = function (cmd) {
   }
 };
 
-var prompt = function () {
+var initPrompt = function () {
   'use strict';
-  // set up iface (readline) if is undefined
-  if (!iface) {
-    iface = rl.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
 
-    iface.setPrompt('$ '.green);
+  iface = rl.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: true
+  });
 
-    // visually indicate closed pipe with ^D
-    // otherwise exiting nested shells is confusing
-    iface.on('close', function () {
-      process.stdout.write('^D\n');
-    });
+  iface.setPrompt('$ '.green);
+  ifacePaused = false;
 
-    // handle ^C like bash
-    iface.on('SIGINT', function () {
-      process.stdout.write('^C');
-      iface.clearLine();
-      // prompt();
-    });
+  // visually indicate closed pipe with ^D
+  // otherwise exiting nested shells is confusing
+  iface.on('close', function () {
+    process.stdout.write('^D\n');
+  });
 
-    iface.on('line', handleCmd);
-  }
+  // handle ^C like bash
+  iface.on('SIGINT', function () {
+    process.stdout.write('^C');
+    iface.clearLine();
+    iface.prompt();
+  });
 
-  iface.prompt();
+  iface.on('line', handleCmd);
 };
+
+var toggleReadline = function () {
+  'use strict';
+  if (iface) {
+    if (ifacePaused) {
+      iface.resume();
+      iface.prompt();
+      ifacePaused = false;
+    } else {
+      // iface.clearLine();
+      iface.pause();
+      ifacePaused = true;
+    }
+  }
+};
+
+/////////////////
+// program starts
+/////////////////
 
 if (!host) {
   console.log('Usage: webnode [WebNode_Server_URL]'.red);
@@ -67,6 +85,7 @@ if (host === '-p') {
 }
 
 socket = require('socket.io-client').connect(host);
+
 socket.on('connect', function () {
   'use strict';
   // ask for password first
@@ -82,21 +101,37 @@ socket.on('terminate', function () {
 socket.on('ok.login', function (data) {
   'use strict';
   path = data;
-  prompt();
+  initPrompt();
+  iface.prompt();
 });
 
 socket.on('ok', function () {
   'use strict';
-  prompt();
+  iface.prompt();
 });
 
 socket.on('stdout', function (data) {
   'use strict';
+  // toggleReadline();
   process.stdout.write(data.toString());
+  // toggleReadline();
 });
 
 socket.on('stderr', function (data) {
   'use strict';
+  // toggleReadline();
   process.stderr.write(data.toString().red);
+  // toggleReadline();
 });
 
+socket.on('worker.assign', function (pid) {
+  'use strict';
+  var msg = 'Worker assigned: ' + pid + '\n';
+  process.stdout.write(msg.cyan);
+});
+
+socket.on('worker.exit', function (pid) {
+  'use strict';
+  var msg = 'Worker exit: ' + pid + '\n';
+  process.stdout.write(msg.cyan);
+});

@@ -49,6 +49,7 @@ basis.sysCmd = function (cmd, socket) {
     process.exit(0);
   }
 
+  // push command
   argv = cmd.match(/^push\ ?(.+)?$/);
   if (argv) {
     var filename = argv[1];
@@ -58,6 +59,26 @@ basis.sysCmd = function (cmd, socket) {
       return true;
     } else {
       basis.push(filename, socket);
+      return true;
+    }
+  }
+
+  // show all tasks
+  if (cmd === 'jobs' || cmd === 'tasks') {
+    socket.emit('task.all');
+    return true;
+  }
+
+  // kill a task
+  argv = cmd.match(/^kill\ ?([0-9]+)?$/);
+  if (argv) {
+    var pid = argv[1];
+    if (!pid) {
+      console.error('Usage: kill [task_pid]'.red);
+      socket.emit('empty');
+      return true;
+    } else {
+      socket.emit('task.kill', pid);
       return true;
     }
   }

@@ -18,26 +18,40 @@ var clearSreen = '\033[2J\033[1;1H';
 
 var io;
 
+var tasks = {};
+
+var cleanupTask = function (pid) {
+  'use strict';
+  delete tasks[pid].task;
+  delete tasks[pid].pid;
+  delete tasks[pid].child;
+  delete tasks[pid];
+};
+
 var queueJob = function (cmd, data, socket) {
   'use strict';
 
   process.nextTick(function () {
     var child = spawn(NODE, cmd, {cwd: data.cwd});
-    basis.log('Worker: '.blue + child.pid +
-              '\nCommand:\n'.blue + data.command.trim());
+    // basis.log('Worker: '.blue + child.pid +
+    //           '\nCommand:\n'.blue + data.command.trim());
+
+    tasks[child.pid] = {};
+    tasks[child.pid].child = child;
+    tasks[child.pid].pid = child.pid;
+    tasks[child.pid].task = data.command.trim();
 
     child.stdout.on('data', function (data) {
       socket.emit('stdout', data.toString());
-      // socket.emit('ok');
     });
 
     child.stderr.on('data', function (data) {
       socket.emit('stderr', data.toString());
-      // socket.emit('ok');
     });
 
     child.on('exit', function () {
       socket.emit('ok');
+      cleanupTask(child.pid);
     });
 
     // socket.emit('ok');
@@ -90,6 +104,27 @@ exports.__socket = function (server, data) {
     });
 
     socket.on('empty', function () {
+      socket.emit('ok');
+    });
+
+    socket.on('task.kill', function (pid) {
+      if (tasks[pid]) {
+        tasks[pid].child.kill();
+      }
+    });
+
+    socket.on('task.all', function () {
+      var msg = 'All tasks:\n';
+      var count = 1;
+      for (var task in tasks) {
+        if (tasks.hasOwnProperty(task)) {
+          console.log(task);
+          msg += count + '\t' + tasks[task].pid + '\t' +
+            tasks[task].task + '\n';
+          ++count;
+        }
+      }
+      socket.emit('stdout', msg);
       socket.emit('ok');
     });
 
