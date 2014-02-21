@@ -76,7 +76,7 @@ var basis = {
     }
 
     // show all tasks
-    if (cmd === 'jobs' || cmd === 'tasks') {
+    if (cmd === 'ts' || cmd === 'jobs' || cmd === 'tasks') {
       socket.emit('task.all');
       return true;
     }
