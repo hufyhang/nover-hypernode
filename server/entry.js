@@ -4,7 +4,7 @@ var pa = require('path');
 var spawn = require('child_process').spawn;
 var ss = require('socket.io-stream');
 
-var VERSION = '0.1.1';
+var VERSION = '0.1.2';
 
 var NODE = 'node';
 var PATH = __dirname;
@@ -92,7 +92,7 @@ exports.__socket = function (server, data) {
         socket.emit('terminate');
       } else {
         socket.emit('stdout', clearSreen);
-        socket.emit('stdout', 'HyperNode Cloud Platform (version: ' + VERSION
+        socket.emit('stdout', 'HyperNode Cloud Environment (version: ' + VERSION
                     + ')\nWelcome, ' + data.user + '!\nServer time: ' +
                       (new Date()).toString() + '\n');
         socket.emit('ok.login', USER_DIR);
