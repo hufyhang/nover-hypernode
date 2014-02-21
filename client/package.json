@@ -1,0 +1,11 @@
+{
+  "name": "hypernode-cli",
+  "version": "0.1.1",
+  "description": "HyperNode Cloud Platform CLI",
+  "main": "hypernode.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Feifei Hang <l.daniel.hung@gmail.com> (http://feifeihang.github.io/)",
+  "license": "MIT"
+}
