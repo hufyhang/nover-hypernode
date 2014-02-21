@@ -31,13 +31,13 @@ var cleanupTask = function (pid) {
   delete tasks[pid];
 };
 
-var queueJob = function (cmd, data, socket) {
+var queueJob = function (cmd, data, offset, socket) {
   'use strict';
 
   process.nextTick(function () {
     var child = spawn(NODE, cmd, {cwd: data.cwd});
     var tokens = cmd[0].split('/');
-    var isRunCommand = tokens[tokens.length - 2] === 'user';
+    var isRunCommand = tokens[tokens.length - offset - 2] === 'user';
     // basis.log('Worker: '.blue + child.pid +
     //           '\nCommand:\n'.blue + data.command.trim());
 
@@ -90,6 +90,11 @@ var exec = function (data, socket) {
   var cmd = data.command.trim().split(' ');
   var runFlag = false;
 
+  var offset = 0;
+  if (cmd[1]) {
+    offset = cmd[1].split('/').length - 1;
+  }
+
   // if run package, remove first cmd and add USER_DIR prefix
   if (cmd[0] === 'run') {
     cmd = cmd.slice(1);
@@ -104,7 +109,7 @@ var exec = function (data, socket) {
   }
 
   // queue a job for nextTick
-  queueJob(cmd, data, socket);
+  queueJob(cmd, data, offset, socket);
 };
 
 exports.__socket = function (server, data) {
