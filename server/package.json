@@ -1,7 +1,7 @@
 {
-  "name": "webnode-server",
+  "name": "hypernode-server",
   "version": "0.1.1",
-  "description": "Web.Node Cloud Platform Server",
+  "description": "HyperNode Cloud Platform Server",
   "main": "entry.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,6 +10,9 @@
   "license": "MIT",
   "dependencies": {
     "colors": "~0.6.2",
-    "socket.io-stream": "~0.5.2"
+    "socket.io-stream": "~0.5.2",
+    "optimist": "~0.6.1",
+    "q": "~1.0.0",
+    "unzip": "~0.1.9"
   }
 }
