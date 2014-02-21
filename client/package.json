@@ -8,6 +8,12 @@
   },
   "author": "Feifei Hang <l.daniel.hung@gmail.com> (http://feifeihang.github.io/)",
   "license": "MIT",
+  "bin": {
+    "hypernode": "hypernode.js"
+  },
+  "engines": {
+    "node": ">= 0.8.0"
+  },
   "dependencies": {
     "colors": "~0.6.2",
     "socket.io-stream": "~0.5.2",
