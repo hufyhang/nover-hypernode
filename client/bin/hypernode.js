@@ -239,26 +239,17 @@ socket.on('ok', function () {
 
 socket.on('stdout', function (data) {
   'use strict';
-  // toggleReadline();
   process.stdout.write(data.toString());
-  // toggleReadline();
 });
 
 socket.on('stderr', function (data) {
   'use strict';
-  // toggleReadline();
   process.stderr.write(data.toString().red);
-  // toggleReadline();
 });
 
-socket.on('worker.assign', function (pid) {
+socket.on('task.notify', function (data) {
   'use strict';
-  var msg = 'Worker assigned: ' + pid + '\n';
-  process.stdout.write(msg.cyan);
-});
-
-socket.on('worker.exit', function (pid) {
-  'use strict';
-  var msg = 'Worker exit: ' + pid + '\n';
-  process.stdout.write(msg.cyan);
+  iface.clearLine();
+  process.stdout.write(data.toString());
+  iface.clearLine();
 });

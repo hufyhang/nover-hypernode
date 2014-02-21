@@ -68,6 +68,8 @@ var queueJob = function (cmd, data, socket) {
 
     child.on('exit', function () {
       if (isRunCommand) {
+        // var msg = 'Task ' + child.pid + ' is done.';
+        // socket.emit('task.notify', msg.cyan);
         tasks[child.pid].status = 'EXIT';
       } else {
         cleanupTask(child.pid);
