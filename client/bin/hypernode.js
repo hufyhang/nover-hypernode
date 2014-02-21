@@ -53,6 +53,8 @@ var basis = {
   sysCmd: function (cmd, socket) {
     'use strict';
     var argv;
+    var pid;
+
     if (cmd === 'exit') {
       process.exit(0);
     }
@@ -77,10 +79,16 @@ var basis = {
       return true;
     }
 
+    // // kill all tasks
+    // if (cmd === 'killall') {
+    //   socket.emit('task.killall');
+    //   return true;
+    // }
+
     // kill a task
     argv = cmd.match(/^kill\ ?([0-9]+)?$/);
     if (argv) {
-      var pid = argv[1];
+      pid = argv[1];
       if (!pid) {
         console.error('Usage: kill [task_pid]'.red);
         socket.emit('empty');
@@ -90,6 +98,35 @@ var basis = {
         return true;
       }
     }
+
+    // stdout a task
+    argv = cmd.match(/^show\ ?([0-9]+)?$/);
+    if (argv) {
+      pid = argv[1];
+      if (!pid) {
+        console.error('Usage: show [task_pid]'.red);
+        socket.emit('empty');
+        return true;
+      } else {
+        socket.emit('task.stdout', pid);
+        return true;
+      }
+    }
+
+    // stderr a task
+    argv = cmd.match(/^error\ ?([0-9]+)?$/);
+    if (argv) {
+      pid = argv[1];
+      if (!pid) {
+        console.error('Usage: error [task_pid]'.red);
+        socket.emit('empty');
+        return true;
+      } else {
+        socket.emit('task.stderr', pid);
+        return true;
+      }
+    }
+
   }
 
 };

@@ -25,6 +25,9 @@ var cleanupTask = function (pid) {
   delete tasks[pid].task;
   delete tasks[pid].pid;
   delete tasks[pid].child;
+  delete tasks[pid].status;
+  delete tasks[pid].stdout;
+  delete tasks[pid].stderr;
   delete tasks[pid];
 };
 
@@ -33,28 +36,49 @@ var queueJob = function (cmd, data, socket) {
 
   process.nextTick(function () {
     var child = spawn(NODE, cmd, {cwd: data.cwd});
+    var tokens = cmd[0].split('/');
+    var isRunCommand = tokens[tokens.length - 2] === 'user';
     // basis.log('Worker: '.blue + child.pid +
     //           '\nCommand:\n'.blue + data.command.trim());
 
     tasks[child.pid] = {};
     tasks[child.pid].child = child;
     tasks[child.pid].pid = child.pid;
+    tasks[child.pid].status = 'RUNNING';
+    tasks[child.pid].stdout = '';
+    tasks[child.pid].stderr = '';
     tasks[child.pid].task = data.command.trim();
 
     child.stdout.on('data', function (data) {
-      socket.emit('stdout', data.toString());
+      if (isRunCommand) {
+         tasks[child.pid].stdout += data.toString();
+      } else {
+        socket.emit('stdout', data.toString());
+      }
     });
 
     child.stderr.on('data', function (data) {
-      socket.emit('stderr', data.toString());
+      if (isRunCommand) {
+        tasks[child.pid].status = 'ERROR';
+        tasks[child.pid].stderr += data.toString();
+      } else {
+        socket.emit('stderr', data.toString());
+      }
     });
 
     child.on('exit', function () {
-      socket.emit('ok');
-      cleanupTask(child.pid);
+      if (isRunCommand) {
+        tasks[child.pid].status = 'EXIT';
+      } else {
+        cleanupTask(child.pid);
+        socket.emit('ok');
+      }
+      // socket.emit('ok');
     });
 
-    // socket.emit('ok');
+    if (isRunCommand) {
+      socket.emit('ok');
+    }
   });
 };
 
@@ -110,7 +134,29 @@ exports.__socket = function (server, data) {
 
     socket.on('task.kill', function (pid) {
       if (tasks[pid]) {
-        tasks[pid].child.kill();
+        if (tasks[pid].status !== 'EXIT') {
+          tasks[pid].child.kill();
+        } else {
+          cleanupTask(pid);
+        }
+      }
+      socket.emit('ok');
+    });
+
+    socket.on('task.stdout', function (pid) {
+      if (tasks[pid]) {
+        socket.emit('stdout', tasks[pid].stdout);
+        socket.emit('ok');
+      }
+    });
+
+    socket.on('task.stderr', function (pid) {
+      if (tasks[pid]) {
+        var msg = tasks[pid].stderr;
+        if (msg.length !== 0) {
+          socket.emit('stdout', tasks[pid].stdout);
+        }
+        socket.emit('ok');
       }
     });
 
@@ -121,7 +167,7 @@ exports.__socket = function (server, data) {
         if (tasks.hasOwnProperty(task)) {
           console.log(task);
           msg += count + '\t' + tasks[task].pid + '\t' +
-            tasks[task].task + '\n';
+            tasks[task].task + '\t[' + tasks[task].status + ']\n';
           ++count;
         }
       }
