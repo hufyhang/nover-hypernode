@@ -9,7 +9,7 @@
   "author": "Feifei Hang <l.daniel.hung@gmail.com> (http://feifeihang.github.io/)",
   "license": "MIT",
   "bin": {
-    "hypernode": "hypernode.js"
+    "hypernode": "./hypernode.js"
   },
   "engines": {
     "node": ">= 0.8.0"
