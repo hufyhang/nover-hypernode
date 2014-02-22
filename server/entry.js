@@ -13,8 +13,10 @@ var PATH = __dirname;
 var LOCAL = PATH + '/local/';
 var USER_DIR = PATH + '/user/';
 var PASS_FILE = PATH + '/etc/passwd.json';
+var CONFIG_FILE = PATH + '/etc/config.json';
 
 var PASS = JSON.parse(fs.readFileSync(PASS_FILE, 'utf-8'));
+var CONFIG = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf-8'));
 
 var clearSreen = '\033[2J\033[1;1H';
 
@@ -144,7 +146,7 @@ exports.__require = function (data) {
 
   // apis
   // show all tasks
-  express.get('/hypernode/tasks', function (req, res) {
+  express.get(CONFIG.acess + '/tasks', function (req, res) {
     var json = {};
     var count = 0;
     for (var task in tasks) {
@@ -155,7 +157,7 @@ exports.__require = function (data) {
         json[count].task = tasks[task].task;
         json[count].status = tasks[task].status;
         json[count].runtime = {};
-        json[count].runtime.href = '/hypernode/task/' + json[count].pid;
+        json[count].runtime.href = CONFIG.access + '/task/' + json[count].pid;
         ++count;
       }
     }
@@ -172,7 +174,7 @@ exports.__require = function (data) {
   });
 
   // get one task
-  express.get('/hypernode/task/:pid', function (req, res) {
+  express.get(CONFIG.access + '/task/:pid', function (req, res) {
     var pid = req.params.pid;
     var msg;
     if (tasks[pid]) {
