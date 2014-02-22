@@ -93,9 +93,9 @@ var queueJob = function (cmd, data, offset, socket) {
 
     child.on('exit', function () {
       if (isRunCommand) {
-        // var msg = 'Task ' + child.pid + ' is done.';
-        // socket.emit('task.notify', msg.cyan);
-        tasks[child.pid].status = 'EXIT';
+        if (tasks[child.pid].status !== 'ERROR') {
+          tasks[child.pid].status = 'EXIT';
+        }
       } else {
         cleanupTask(child.pid);
         socket.emit('ok', tasksInformation());
@@ -247,7 +247,7 @@ exports.__require = function (data) {
       if (tasks[pid]) {
         var msg = tasks[pid].stderr;
         if (msg.length !== 0) {
-          socket.emit('stdout', tasks[pid].stdout);
+          socket.emit('stdout', msg);
         }
         socket.emit('ok', tasksInformation());
       }
