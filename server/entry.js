@@ -153,9 +153,17 @@ exports.__require = function (data) {
         json[count].pid = tasks[task].pid;
         json[count].task = tasks[task].task;
         json[count].status = tasks[task].status;
+        json[count].runtime = {};
+        json[count].runtime.href = '/hypernode/task/' + json[count].pid;
         ++count;
       }
     }
+
+    if (count === 0) {
+      json.code = 302;
+      json.information = 'No scheduled tasks.';
+    }
+
     json = JSON.stringify(json);
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(json);
@@ -168,6 +176,7 @@ exports.__require = function (data) {
     var msg;
     if (tasks[pid]) {
       var json = {};
+      json.code = 200;
       json.pid = pid;
       json.task = tasks[pid].task;
       json.status = tasks[pid].status;
