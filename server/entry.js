@@ -227,7 +227,9 @@ exports.__require = function (data) {
 
     socket.on('task.kill', function (pid) {
       if (tasks[pid]) {
-        if (tasks[pid].status !== 'EXIT') {
+        var isNotRunning = tasks[pid].status !== 'EXIT' &&
+          tasks[pid].status !== 'ERROR';
+        if (isNotRunning) {
           tasks[pid].child.kill();
         } else {
           cleanupTask(pid);
