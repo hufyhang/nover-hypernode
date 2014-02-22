@@ -20,11 +20,15 @@ var basis = {
   // push files to server
   push: function (path, socket) {
     'use strict';
-    var stream = ss.createStream();
-    path = path.replace(/^~/, process.env.HOME);
-    ss(socket).emit('push', stream, {name: path});
-    fs.createReadStream(path)
-    .pipe(stream);
+    if (fs.existsSync(path)) {
+      var stream = ss.createStream();
+      path = path.replace(/^~/, process.env.HOME);
+      ss(socket).emit('push', stream, {name: path});
+      fs.createReadStream(path)
+      .pipe(stream);
+    } else {
+       process.stdout.write('File not found.'.red);
+    }
     return true;
   },
 
