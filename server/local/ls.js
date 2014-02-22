@@ -7,10 +7,25 @@ var pa = require('path');
 var path = pa.resolve(__dirname, '../user/', argv._[0] || '');
 var real = fs.existsSync(path);
 
+var buffer = '';
 if (real) {
   var stat = fs.statSync(path);
   if (stat.isDirectory()){
-    console.log(fs.readdirSync(path));
+    var files = fs.readdirSync(path);
+    var fileStat;
+    files.forEach(function (file) {
+      'use strict';
+      var filename = pa.resolve(path, file);
+      fileStat = fs.statSync(filename);
+
+      if (fileStat.isDirectory()) {
+        buffer += file + '\t [DIR]\n';
+      } else {
+        buffer += file + '\t ' + fileStat.size + '\n';
+      }
+    });
+
+    console.log(buffer);
   } else {
     console.log(path);
   }
