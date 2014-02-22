@@ -153,6 +153,8 @@ var handleCmd = function (cmd) {
     if (!basis.sysCmd(command, socket)) {
       socket.emit('cmd', {command: command, cwd: path});
     }
+  } else {
+    socket.emit('empty');
   }
 };
 
