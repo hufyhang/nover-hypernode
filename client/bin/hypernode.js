@@ -20,15 +20,10 @@ var basis = {
   // push files to server
   push: function (path, socket) {
     'use strict';
-    if (fs.existsSync(path)) {
-      var stream = ss.createStream();
-      path = path.replace(/^~/, process.env.HOME);
-      ss(socket).emit('push', stream, {name: path});
-      fs.createReadStream(path)
-      .pipe(stream);
-    } else {
-       process.stdout.write('File not found.'.red);
-    }
+    var stream = ss.createStream();
+    ss(socket).emit('push', stream, {name: path});
+    fs.createReadStream(path)
+    .pipe(stream);
     return true;
   },
 
@@ -70,12 +65,18 @@ var basis = {
     argv = cmd.match(/^push\ ?(.+)?$/);
     if (argv) {
       var filename = argv[1];
+      filename = filename.replace(/^~/, process.env.HOME);
       if (!filename) {
         console.error('Usage: push [filename]'.red);
         socket.emit('empty');
         return true;
       } else {
-        basis.push(filename, socket);
+        if (fs.existsSync(filename)) {
+          basis.push(filename, socket);
+        } else {
+          console.error('File not found.'.red);
+          socket.emit('empty');
+        }
         return true;
       }
     }
