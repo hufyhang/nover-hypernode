@@ -149,6 +149,7 @@ exports.__require = function (data) {
     var count = 0;
     for (var task in tasks) {
       if (tasks.hasOwnProperty(task)) {
+        json.code = 200;
         json[count] = {};
         json[count].pid = tasks[task].pid;
         json[count].task = tasks[task].task;
