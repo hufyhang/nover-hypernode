@@ -146,7 +146,7 @@ exports.__require = function (data) {
 
   // apis
   // show all tasks
-  express.get(CONFIG.acess + '/tasks', function (req, res) {
+  express.get(CONFIG.access + '/tasks', function (req, res) {
     var json = {};
     var count = 0;
     for (var task in tasks) {

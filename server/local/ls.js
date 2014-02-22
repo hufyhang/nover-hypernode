@@ -19,9 +19,9 @@ if (real) {
       fileStat = fs.statSync(filename);
 
       if (fileStat.isDirectory()) {
-        buffer += file + '\t [DIR]\n';
+        buffer += '[' + file + '] ';
       } else {
-        buffer += file + '\t ' + fileStat.size + '\n';
+        buffer += file + ' ';
       }
     });
 
