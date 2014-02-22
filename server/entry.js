@@ -1,8 +1,10 @@
-var basis = require('./lib/basis');
 var fs = require('fs');
 var pa = require('path');
 var spawn = require('child_process').spawn;
 var ss = require('socket.io-stream');
+
+var server;
+var express;
 
 var VERSION = '0.1.2';
 
@@ -112,8 +114,59 @@ var exec = function (data, socket) {
   queueJob(cmd, data, offset, socket);
 };
 
-exports.__socket = function (server, data) {
+exports.__require = function (data) {
   'use strict';
+  server = data.httpd;
+  express = data.http;
+
+  // apis
+  // show all tasks
+  express.get('/hypernode/tasks', function (req, res) {
+    var json = {};
+    var count = 0;
+    for (var task in tasks) {
+      if (tasks.hasOwnProperty(task)) {
+        json[count] = {};
+        json[count].pid = tasks[task].pid;
+        json[count].task = tasks[task].task;
+        json[count].status = tasks[task].status;
+        ++count;
+      }
+    }
+    json = JSON.stringify(json);
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.write(json);
+    res.end();
+  });
+
+  // get one task
+  express.get('/hypernode/task/:pid', function (req, res) {
+    var pid = req.params.pid;
+    var msg;
+    if (tasks[pid]) {
+      var json = {};
+      json.pid = pid;
+      json.task = tasks[pid].task;
+      json.status = tasks[pid].status;
+      var stdout = tasks[pid].stdout;
+      stdout.replace(/\"/g, '\\"');
+      stdout.replace(/\n/g, '\\n');
+      json.stdout = stdout;
+
+      var stderr = tasks[pid].stderr;
+      stderr.replace(/\"/g, '\\"');
+      stderr.replace(/\n/g, '\\n');
+      json.stderr = stderr;
+      msg = JSON.stringify(json);
+    } else {
+      msg = '{"code": 404, "information": "No such task."}';
+    }
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.write(msg);
+    res.end();
+  });
+
+  // socket.io
   io = require('socket.io').listen(server);
 
   io.sockets.on('connection', function (socket) {
