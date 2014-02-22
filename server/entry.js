@@ -30,6 +30,7 @@ var cleanupTask = function (pid) {
   delete tasks[pid].pid;
   delete tasks[pid].child;
   delete tasks[pid].status;
+  delete tasks[pid].scheduled;
   delete tasks[pid].stdout;
   delete tasks[pid].stderr;
   delete tasks[pid];
@@ -65,20 +66,24 @@ var queueJob = function (cmd, data, offset, socket) {
     var child = spawn(NODE, cmd, {cwd: data.cwd});
     var tokens = cmd[0].split('/');
     var isRunCommand = tokens[tokens.length - offset - 2] === 'user';
-    // basis.log('Worker: '.blue + child.pid +
-    //           '\nCommand:\n'.blue + data.command.trim());
+    var appendBuffer = cmd[cmd.length - 1] !== '&';
 
     tasks[child.pid] = {};
     tasks[child.pid].child = child;
     tasks[child.pid].pid = child.pid;
     tasks[child.pid].status = 'RUNNING';
+    tasks[child.pid].scheduled = (new Date()).toString();
     tasks[child.pid].stdout = '';
     tasks[child.pid].stderr = '';
     tasks[child.pid].task = data.command.trim();
 
     child.stdout.on('data', function (data) {
       if (isRunCommand) {
-         tasks[child.pid].stdout += data.toString();
+        if (appendBuffer) {
+          tasks[child.pid].stdout += data.toString();
+        } else {
+          tasks[child.pid].stdout = data.toString();
+        }
       } else {
         socket.emit('stdout', data.toString());
       }
@@ -156,6 +161,7 @@ exports.__require = function (data) {
         json[count].pid = tasks[task].pid;
         json[count].task = tasks[task].task;
         json[count].status = tasks[task].status;
+        json[count].scheduled = tasks[task].scheduled;
         json[count].runtime = {};
         json[count].runtime.href = CONFIG.access + '/task/' + json[count].pid;
         ++count;
@@ -182,6 +188,7 @@ exports.__require = function (data) {
       json.code = 200;
       json.pid = pid;
       json.task = tasks[pid].task;
+      json.scheduled = tasks[pid].scheduled;
       json.status = tasks[pid].status;
       var stdout = tasks[pid].stdout;
       stdout.replace(/\"/g, '\\"');
@@ -263,8 +270,8 @@ exports.__require = function (data) {
       for (var task in tasks) {
         if (tasks.hasOwnProperty(task)) {
           console.log(task);
-          msg += count + '\t' + tasks[task].pid + '\t' +
-            tasks[task].task + '\t[' + tasks[task].status + ']\n';
+          msg += tasks[task].pid + ' |' + tasks[task].scheduled +
+            '| ' + tasks[task].task + '\t[' + tasks[task].status + ']\n';
           ++count;
         }
       }
