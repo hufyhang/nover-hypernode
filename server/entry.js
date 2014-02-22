@@ -270,8 +270,8 @@ exports.__require = function (data) {
       for (var task in tasks) {
         if (tasks.hasOwnProperty(task)) {
           console.log(task);
-          msg += tasks[task].pid + ' |' + tasks[task].scheduled +
-            '| ' + tasks[task].task + '\t[' + tasks[task].status + ']\n';
+          msg += tasks[task].pid + ' [' + tasks[task].status + '] ' +
+            tasks[task].scheduled + '| ' + tasks[task].task;
           ++count;
         }
       }
