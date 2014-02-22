@@ -14,6 +14,7 @@ var ifacePaused;
 var socket;
 var host = process.argv[2];
 var path = '';
+var tasksInformation = '';
 
 var basis = {
   // push files to server
@@ -225,15 +226,17 @@ socket.on('terminate', function () {
   process.exit(0);
 });
 
-socket.on('ok.login', function (data) {
+socket.on('ok.login', function (data, info) {
   'use strict';
   path = data;
   initPrompt();
+  iface.setPrompt(info.green + ' $ '.green);
   iface.prompt();
 });
 
-socket.on('ok', function () {
+socket.on('ok', function (tasksInfo) {
   'use strict';
+  iface.setPrompt(tasksInfo.green + ' $ '.green);
   iface.prompt();
 });
 

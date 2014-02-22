@@ -33,6 +33,29 @@ var cleanupTask = function (pid) {
   delete tasks[pid];
 };
 
+var tasksInformation = function () {
+  'use strict';
+  var total = 0;
+  var exits = 0;
+  var errors = 0;
+
+  for (var task in tasks) {
+    if (tasks.hasOwnProperty(task)) {
+      ++total;
+      var status = tasks[task].status;
+
+      if (status === 'EXIT') {
+        ++exits;
+      }
+      else if (status === 'ERROR') {
+        ++errors;
+      }
+    }
+  }
+
+  return '+' + total + '/' + exits + '/' + errors + '+';
+};
+
 var queueJob = function (cmd, data, offset, socket) {
   'use strict';
 
@@ -75,13 +98,13 @@ var queueJob = function (cmd, data, offset, socket) {
         tasks[child.pid].status = 'EXIT';
       } else {
         cleanupTask(child.pid);
-        socket.emit('ok');
+        socket.emit('ok', tasksInformation());
       }
       // socket.emit('ok');
     });
 
     if (isRunCommand) {
-      socket.emit('ok');
+      socket.emit('ok', tasksInformation());
     }
   });
 };
@@ -180,7 +203,7 @@ exports.__require = function (data) {
                     + ')\nWelcome, ' + data.user + '!\nServer time: ' +
                       (new Date()).toString() +
                       '\nType "help" for user manual.\n');
-        socket.emit('ok.login', USER_DIR);
+        socket.emit('ok.login', USER_DIR, tasksInformation());
       }
     });
 
@@ -189,7 +212,7 @@ exports.__require = function (data) {
     });
 
     socket.on('empty', function () {
-      socket.emit('ok');
+      socket.emit('ok', tasksInformation());
     });
 
     socket.on('task.kill', function (pid) {
@@ -200,13 +223,13 @@ exports.__require = function (data) {
           cleanupTask(pid);
         }
       }
-      socket.emit('ok');
+      socket.emit('ok', tasksInformation());
     });
 
     socket.on('task.stdout', function (pid) {
       if (tasks[pid]) {
         socket.emit('stdout', tasks[pid].stdout);
-        socket.emit('ok');
+        socket.emit('ok', tasksInformation());
       }
     });
 
@@ -216,7 +239,7 @@ exports.__require = function (data) {
         if (msg.length !== 0) {
           socket.emit('stdout', tasks[pid].stdout);
         }
-        socket.emit('ok');
+        socket.emit('ok', tasksInformation());
       }
     });
 
@@ -232,14 +255,14 @@ exports.__require = function (data) {
         }
       }
       socket.emit('stdout', msg);
-      socket.emit('ok');
+      socket.emit('ok', tasksInformation());
     });
 
     // add socket.io-steam for file uploading
     ss(socket).on('push', function (stream, data) {
       var filename = USER_DIR + pa.basename(data.name);
       stream.pipe(fs.createWriteStream(filename));
-      socket.emit('ok');
+      socket.emit('ok', tasksInformation());
     });
 
   });
