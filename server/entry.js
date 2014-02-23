@@ -6,7 +6,7 @@ var ss = require('socket.io-stream');
 var server;
 var express;
 
-var VERSION = '0.1.2';
+var VERSION = '0.1.3';
 
 var NODE = 'node';
 var PATH = __dirname;
