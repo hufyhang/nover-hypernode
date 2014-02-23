@@ -63,10 +63,14 @@ var queueJob = function (cmd, data, offset, socket) {
   'use strict';
 
   process.nextTick(function () {
+    var appendBuffer = cmd[cmd.length - 1] !== '&';
+    if (!appendBuffer) {
+      cmd.pop();
+    }
+
     var child = spawn(NODE, cmd, {cwd: data.cwd});
     var tokens = cmd[0].split('/');
     var isRunCommand = tokens[tokens.length - offset - 2] === 'user';
-    var appendBuffer = cmd[cmd.length - 1] !== '&';
 
     tasks[child.pid] = {};
     tasks[child.pid].child = child;
