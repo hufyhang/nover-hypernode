@@ -22,6 +22,8 @@ var clearSreen = '\033[2J\033[1;1H';
 
 var io;
 
+process.env.HYPERNODE_CWD = USER_DIR;
+
 var tasks = {};
 
 var cleanupTask = function (pid) {
@@ -90,6 +92,10 @@ var queueJob = function (cmd, data, offset, socket) {
         }
       } else {
         socket.emit('stdout', data.toString());
+        // check if cd command
+        if (tokens[tokens.length - 1] === 'cd') {
+          process.env.HYPERNODE_CWD = data.toString();
+        }
       }
     });
 
@@ -222,10 +228,9 @@ exports.__require = function (data) {
         socket.emit('terminate');
       } else {
         socket.emit('stdout', clearSreen);
-        socket.emit('stdout', 'HyperNode Cloud Environment (version: ' + VERSION
-                    + ')\nWelcome, ' + data.user + '!\nServer time: ' +
-                      (new Date()).toString() +
-                      '\nType "help" for user manual.\n');
+        socket.emit('stdout', 'HyperNode Cloud Environment (version: ' +
+                    VERSION + ')\nWelcome, ' + data.user + '!\nServer time: ' +
+                    (new Date()).toString() + '\nType "help" for user manual.\n');
         socket.emit('ok.login', USER_DIR, tasksInformation());
       }
     });
