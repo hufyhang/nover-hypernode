@@ -4,7 +4,10 @@ var fs   = require('fs');
 var argv = require('optimist').argv;
 var pa = require('path');
 
-var path = pa.resolve(__dirname, '../user/', argv._[0] || '');
+var CWD = process.env.HYPERNODE_CWD;
+
+var path = pa.resolve(CWD, argv._[0] || '');
+
 var real = fs.existsSync(path);
 
 var buffer = '';
@@ -24,13 +27,12 @@ if (real) {
         buffer += file + ' ';
       }
     });
-
     console.log(buffer);
   } else {
     console.log(path);
   }
   process.exit(0);
 } else {
-  console.error("Not Found");
+  console.error("Not Found: " + path);
   process.exit(1);
 }

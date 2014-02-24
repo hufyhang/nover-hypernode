@@ -25,7 +25,7 @@ if (argv.length < 3) {
   process.exit(0);
 }
 
-var path = pa.resolve(__dirname, '../user/');
+var path = process.env.HYPERNODE_CWD;
 var dest;
 
 if (argv[2] === '-r') {

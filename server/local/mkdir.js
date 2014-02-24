@@ -3,7 +3,7 @@
 var fs = require('fs');
 var pa = require('path');
 
-var path = pa.resolve(__dirname, '../user/');
+var path = process.env.HYPERNODE_CWD;
 
 var argv = process.argv;
 var leng = argv.length;

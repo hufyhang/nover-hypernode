@@ -6,12 +6,12 @@ var ss = require('socket.io-stream');
 var server;
 var express;
 
-var VERSION = '0.1.3';
+var VERSION = '0.1.5';
 
 var NODE = 'node';
 var PATH = __dirname;
 var LOCAL = PATH + '/local/';
-var USER_DIR = PATH + '/home/';
+var HOME_DIR = PATH + '/home/';
 var PASS_FILE = PATH + '/etc/passwd.json';
 var CONFIG_FILE = PATH + '/etc/config.json';
 
@@ -22,7 +22,7 @@ var clearSreen = '\033[2J\033[1;1H';
 
 var io;
 
-process.env.HYPERNODE_CWD = USER_DIR;
+process.env.HYPERNODE_CWD = HOME_DIR;
 
 var tasks = {};
 
@@ -94,7 +94,8 @@ var queueJob = function (cmd, data, offset, socket) {
         socket.emit('stdout', data.toString());
         // check if cd command
         if (tokens[tokens.length - 1] === 'cd') {
-          process.env.HYPERNODE_CWD = data.toString();
+          var newPath = data.toString().replace(/\n/g, '');
+          process.env.HYPERNODE_CWD = newPath;
         }
       }
     });
@@ -137,10 +138,10 @@ var exec = function (data, socket) {
     offset = cmd[1].split('/').length - 1;
   }
 
-  // if run package, remove first cmd and add USER_DIR prefix
+  // if run package, remove first cmd and add HOME_DIR prefix
   if (cmd[0] === 'run') {
     cmd = cmd.slice(1);
-    cmd[0] = USER_DIR + cmd[0];
+    cmd[0] = HOME_DIR + cmd[0];
     runFlag = true;
   }
 
@@ -231,7 +232,7 @@ exports.__require = function (data) {
         socket.emit('stdout', 'HyperNode Cloud Environment (version: ' +
                     VERSION + ')\nWelcome, ' + data.user + '!\nServer time: ' +
                     (new Date()).toString() + '\nType "help" for user manual.\n');
-        socket.emit('ok.login', USER_DIR, tasksInformation());
+        socket.emit('ok.login', HOME_DIR, tasksInformation());
       }
     });
 
@@ -290,7 +291,8 @@ exports.__require = function (data) {
 
     // add socket.io-steam for file uploading
     ss(socket).on('push', function (stream, data) {
-      var filename = USER_DIR + pa.basename(data.name);
+      var filename = pa.resolve(process.env.HYPERNODE_CWD,
+                                pa.basename(data.name));
       stream.pipe(fs.createWriteStream(filename));
       socket.emit('ok', tasksInformation());
     });

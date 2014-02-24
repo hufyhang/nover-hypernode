@@ -9,7 +9,7 @@ if (argv.length !== 3) {
   process.exit(0);
 }
 
-var filename = pa.resolve(__dirname, '../user/', argv[2]);
+var filename = pa.resolve(process.env.HYPERNODE_CWD, argv[2]);
 var path = pa.dirname(filename);
 
 fs.createReadStream(filename)
