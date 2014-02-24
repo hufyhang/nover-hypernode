@@ -36,7 +36,7 @@ var addItemDetail = function (filename) {
   var fileStat = fs.statSync(filename);
   var buffer = '';
 
-  buffer += (fileStat.mode & parseInt('0777', 8)).tostring(8) + '\t' +
+  buffer += (fileStat.mode & parseInt('0777', 8)).toString(8) + '\t' +
     fileStat.size + '\t' + fileStat.mtime + '\t -- ';
 
   if (fileStat.isDirectory()) {
