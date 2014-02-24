@@ -238,6 +238,8 @@ exports.__require = function (data) {
                     VERSION + ')\nWelcome, ' + data.user + '!\nServer time: ' +
                     (new Date()).toString() + '\nType "help" for user manual.\n');
         socket.emit('ok.login', HOME_DIR, tasksInformation());
+        // reset env.HYPERNODE_CWD to HOME_DIR for new connections
+        process.env.HYPERNODE_CWD = HOME_DIR;
       }
     });
 
