@@ -71,6 +71,11 @@ var queueJob = function (cmd, data, offset, socket) {
     }
 
     var child = spawn(NODE, cmd, {cwd: data.cwd});
+
+    // tokens are the user-issued command (without arguments),
+    // split by / (slash)
+    // e.g. if user issue "ls index.js", the tokens will be like:
+    // ['the', 'path', 'ls']
     var tokens = cmd[0].split('/');
     var isRunCommand = tokens[tokens.length - offset - 2] === 'home';
 
