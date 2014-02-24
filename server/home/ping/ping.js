@@ -52,6 +52,8 @@ var callback = function(response) {
 console.log('URL: ' + url);
 console.log('Delay: ' + delay);
 
+http.get(options, callback).end();
+
 setInterval(function () {
   'use strict';
   http.get(options, callback).end();
