@@ -11,7 +11,7 @@ var VERSION = '0.1.3';
 var NODE = 'node';
 var PATH = __dirname;
 var LOCAL = PATH + '/local/';
-var USER_DIR = PATH + '/user/';
+var USER_DIR = PATH + '/home/';
 var PASS_FILE = PATH + '/etc/passwd.json';
 var CONFIG_FILE = PATH + '/etc/config.json';
 
@@ -72,7 +72,7 @@ var queueJob = function (cmd, data, offset, socket) {
 
     var child = spawn(NODE, cmd, {cwd: data.cwd});
     var tokens = cmd[0].split('/');
-    var isRunCommand = tokens[tokens.length - offset - 2] === 'user';
+    var isRunCommand = tokens[tokens.length - offset - 2] === 'home';
 
     tasks[child.pid] = {};
     tasks[child.pid].child = child;
