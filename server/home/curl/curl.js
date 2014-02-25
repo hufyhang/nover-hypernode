@@ -17,6 +17,12 @@ while (/^-[A-Za-z]+$/.test(url)) {
   url = process.argv[++count];
 }
 
+// check if the issued url has protocol prefix
+var hasProtocol = /^http[s]?:\/\//.test(url);
+if (!hasProtocol) {
+  url = 'http://' + url;
+}
+
 var fetchHeader = function (response) {
   'use strict';
   var str = '';
@@ -62,6 +68,7 @@ var callback = function(response) {
 
   response.on('data', function (chunk) {
     if (~opts.indexOf('-i')) {
+      // make sure headers will only be fetched once
       if (!headerFetched) {
         str += fetchHeader(response) + '\n';
         headerFetched = true;
