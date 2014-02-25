@@ -5,9 +5,9 @@ var pa = require('path');
 
 var CWD = process.env.HYPERNODE_CWD;
 var path = process.argv[2] || '.';
-path = pa.resolve(CWD, path);
+var buffer = path + '\n';
 
-var buffer = '.\n';
+path = pa.resolve(CWD, path);
 
 var getSeparator = function (isRoot, index, array) {
   'use strict';
