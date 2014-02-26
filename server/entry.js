@@ -70,14 +70,22 @@ var queueJob = function (cmd, data, offset, socket) {
       cmd.pop();
     }
 
-    var child = spawn(NODE, cmd, {cwd: data.cwd});
-
     // tokens are the user-issued command (without arguments),
     // split by / (slash)
     // e.g. if user issue "ls index.js", the tokens will be like:
     // ['the', 'path', 'ls']
     var tokens = cmd[0].split('/');
     var isRunCommand = tokens[tokens.length - offset - 2] === 'home';
+
+    // return if command script does not exist
+    if (!fs.existsSync(cmd[0] + '.js')) {
+      var msg = 'command not found: ' + tokens[tokens.length - 1] + '\n';
+      socket.emit('stdout', msg);
+      socket.emit('ok', tasksInformation());
+      return;
+    }
+
+    var child = spawn(NODE, cmd, {cwd: data.cwd});
 
     tasks[child.pid] = {};
     tasks[child.pid].child = child;
