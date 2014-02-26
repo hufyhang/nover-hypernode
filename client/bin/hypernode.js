@@ -66,7 +66,7 @@ var basis = {
     if (argv) {
       var filename = argv[1];
       if (!filename) {
-        console.log('Usage: push [filename]'.red);
+        console.log('Usage: push [filename]');
         socket.emit('empty');
         return true;
       } else {
@@ -74,7 +74,7 @@ var basis = {
         if (fs.existsSync(filename)) {
           basis.push(filename, socket);
         } else {
-          console.log('File not found.'.red);
+          console.log('File not found.');
           socket.emit('empty');
         }
         return true;
@@ -98,7 +98,7 @@ var basis = {
     if (argv) {
       pid = argv[1];
       if (!pid) {
-        console.log('Usage: kill [task_pid]'.red);
+        console.log('Usage: kill [task_pid]');
         socket.emit('empty');
         return true;
       } else {
@@ -112,7 +112,7 @@ var basis = {
     if (argv) {
       pid = argv[1];
       if (!pid) {
-        console.log('Usage: show [task_pid]'.red);
+        console.log('Usage: show [task_pid]');
         socket.emit('empty');
         return true;
       } else {
@@ -126,7 +126,7 @@ var basis = {
     if (argv) {
       pid = argv[1];
       if (!pid) {
-        console.log('Usage: error [task_pid]'.red);
+        console.log('Usage: error [task_pid]');
         socket.emit('empty');
         return true;
       } else {
