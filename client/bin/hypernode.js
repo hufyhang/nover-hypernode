@@ -7,7 +7,7 @@ var prompt = require('prompt');
 var fs = require('fs');
 var ss = require('socket.io-stream');
 
-var VERSION = '0.1.2-pre';
+var VERSION = '0.1.3-pre';
 
 var iface;
 var ifacePaused;
@@ -65,16 +65,16 @@ var basis = {
     argv = cmd.match(/^push\ ?(.+)?$/);
     if (argv) {
       var filename = argv[1];
-      filename = filename.replace(/^~/, process.env.HOME);
       if (!filename) {
-        console.error('Usage: push [filename]'.red);
+        console.log('Usage: push [filename]'.red);
         socket.emit('empty');
         return true;
       } else {
+        filename = filename.replace(/^~/, process.env.HOME);
         if (fs.existsSync(filename)) {
           basis.push(filename, socket);
         } else {
-          console.error('File not found.'.red);
+          console.log('File not found.'.red);
           socket.emit('empty');
         }
         return true;
@@ -98,7 +98,7 @@ var basis = {
     if (argv) {
       pid = argv[1];
       if (!pid) {
-        console.error('Usage: kill [task_pid]'.red);
+        console.log('Usage: kill [task_pid]'.red);
         socket.emit('empty');
         return true;
       } else {
@@ -112,7 +112,7 @@ var basis = {
     if (argv) {
       pid = argv[1];
       if (!pid) {
-        console.error('Usage: show [task_pid]'.red);
+        console.log('Usage: show [task_pid]'.red);
         socket.emit('empty');
         return true;
       } else {
@@ -126,7 +126,7 @@ var basis = {
     if (argv) {
       pid = argv[1];
       if (!pid) {
-        console.error('Usage: error [task_pid]'.red);
+        console.log('Usage: error [task_pid]'.red);
         socket.emit('empty');
         return true;
       } else {
