@@ -14,6 +14,6 @@ for(var i=2; i < argv; i++) {
     fs.createReadStream(from).pipe( process.stdout );
   }
   else {
-    console.error("cat: "+from+": No such file or directory");
+    console.log("cat: "+from+": No such file or directory");
   }
 }

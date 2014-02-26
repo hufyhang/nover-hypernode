@@ -8,7 +8,7 @@ var CWD = process.env.HYPERNODE_CWD;
 var path = process.argv[2];
 
 if (!path) {
-  console.error('Usage: cd [directory]');
+  console.log('Usage: cd [directory]');
   process.exit(0);
 }
 
@@ -20,10 +20,10 @@ if (fs.existsSync(path)) {
   if (stat.isDirectory()) {
     console.log(path);
   } else {
-    console.error('No such directory: ' + path);
+    console.log('No such directory: ' + path);
   }
 } else {
-  console.error('No such directory: ' + path);
+  console.log('No such directory: ' + path);
 }
 
 process.exit(0);

@@ -119,6 +119,6 @@ var result = treeDir(true, path, '', 0, false);
 if (result) {
   console.log(result);
 } else {
-  console.error('Cannot open dir:\n' + path);
+  console.log('Cannot open dir: ' + path);
 }
 

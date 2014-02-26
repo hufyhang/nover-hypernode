@@ -5,7 +5,7 @@ var pa = require('path');
 var argv = process.argv;
 
 if (argv.length !== 3) {
-  console.error('Usage: unzip [zip_file]');
+  console.log('Usage: unzip [zip_file]');
   process.exit(0);
 }
 

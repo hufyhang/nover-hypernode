@@ -21,7 +21,7 @@ var deleteFolderRecursive = function (path) {
 var argv = process.argv;
 
 if (argv.length < 3) {
-  console.error('Usage: rm [-r] [filename]');
+  console.log('Usage: rm [-r] [filename]');
   process.exit(0);
 }
 

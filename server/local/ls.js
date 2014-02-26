@@ -115,6 +115,6 @@ if (real) {
   }
   process.exit(0);
 } else {
-  console.error("Not Found: " + path);
+  console.log("Not Found: " + path);
   process.exit(1);
 }

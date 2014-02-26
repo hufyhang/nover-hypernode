@@ -7,7 +7,7 @@ var argv = process.argv;
 var DEFAULT_DURATION = 5 * 1000; // default process duration is 5 sec.
 
 if (argv.length < 3) {
-  console.error('Usage: now [duration] [filename] [args]');
+  console.log('Usage: now [duration] [filename] [args]');
   process.exit(0);
 }
 
