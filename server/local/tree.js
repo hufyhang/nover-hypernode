@@ -33,7 +33,11 @@ var getLeading = function (index, array) {
 var getHead = function (isRoot, index, array) {
   'use strict';
   if (!isRoot) {
-    return '│';
+    if (noMoreHead) {
+      return ' ';
+    } else {
+      return '│';
+    }
   }
 
   if (index < array.length - 1) {
