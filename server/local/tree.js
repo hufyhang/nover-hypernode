@@ -6,6 +6,7 @@ var pa = require('path');
 var CWD = process.env.HYPERNODE_CWD;
 var path = process.argv[2] || '.';
 var buffer = path + '\n';
+var noMoreHead = false;
 
 path = pa.resolve(CWD, path);
 
@@ -38,7 +39,13 @@ var getHead = function (isRoot, index, array) {
   if (index < array.length - 1) {
     return '│';
   }
-  return '└';
+
+  if (noMoreHead) {
+    return ' ';
+  } else {
+    noMoreHead = true;
+    return '└';
+  }
 };
 
 var appendTabs = function (inputTabs, leading, isRoot, level, noMore) {
