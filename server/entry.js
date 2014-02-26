@@ -108,7 +108,9 @@ var queueJob = function (cmd, data, offset, socket) {
       } else {
         socket.emit('stdout', data.toString());
         // check if cd command
-        if (tokens[tokens.length - 1] === 'cd') {
+        var isCdOk = tokens[tokens.length - 1] === 'cd' &&
+          /^No\ such\ directory:/.test(data.toString()) === false;
+        if (isCdOk) {
           var newPath = data.toString().replace(/\n/g, '');
           process.env.HYPERNODE_CWD = newPath;
         }
