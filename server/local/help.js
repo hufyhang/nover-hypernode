@@ -6,8 +6,6 @@ help += 'cat \t-- concatenate files.\n';
 help += 'cd \t-- change directory.\n';
 help += 'ls \t-- list files.\n';
 help += 'tree \t-- show directory tree.\n';
-help += 'pkg \t-- package management.\n';
-help += 'curl \t-- send HTTP/HTTPS requests.\n';
 help += 'exit \t-- exit HyperNode.\n';
 
 help += '\n--- File/Folder Management---\n';
@@ -16,6 +14,11 @@ help += 'rm \t-- remove a file.\n';
 help += 'rm -r \t-- remove a folder.\n';
 help += 'mv \t-- move a file to somewhere.\n';
 help += 'mkdir \t-- create a folder.\n';
+
+help += '\n--- Networking ---\n';
+help += 'pkg \t-- package management.\n';
+help += 'curl \t-- send HTTP/HTTPS requests.\n';
+help += 'ifconfig \t-- show IP address.\n';
 
 help += '\n--- File Transfer ---\n';
 help += 'push \t-- upload a local file.\n';
