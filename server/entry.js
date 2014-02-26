@@ -78,7 +78,9 @@ var queueJob = function (cmd, data, offset, socket) {
     var isRunCommand = tokens[tokens.length - offset - 2] === 'home';
 
     // return if command script does not exist
-    if (!fs.existsSync(cmd[0] + '.js')) {
+    var scriptExists = fs.existsSync(cmd[0] + '.js') ||
+      fs.existsSync(cmd[0] + '/index.js');
+    if (!scriptExists) {
       var msg = 'command not found: ' + tokens[tokens.length - 1] + '\n';
       socket.emit('stdout', msg);
       socket.emit('ok', tasksInformation());

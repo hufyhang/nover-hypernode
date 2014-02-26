@@ -99,6 +99,10 @@ if (real) {
   var stat = fs.statSync(path);
   if (stat.isDirectory()){
     var files = fs.readdirSync(path);
+    if (hasFlag) {
+      buffer += 'total ' + files.length + '\n';
+    }
+
     files.forEach(function (file) {
       'use strict';
       var filename = pa.resolve(path, file);
