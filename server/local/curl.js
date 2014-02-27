@@ -88,7 +88,12 @@ var callback = function(response) {
         ? http
         : https;
 
-      protocol.get(newUrl, callback).end();
+      protocol.get(newUrl, function (res) {
+        if (~opts.indexOf('-b')) {
+          res.setEncoding('binary');
+        }
+        callback(res);
+      }).end();
     }
   });
 
@@ -113,5 +118,11 @@ protocol = /^http:\/\/.+$/.test(url)
   ? http
   : https;
 
-protocol.get(url, callback).end();
+  protocol.get(url, function (res) {
+    'use strict';
+    if (~opts.indexOf('-b')) {
+      res.setEncoding('binary');
+    }
+    callback(res);
+  }).end();
 
