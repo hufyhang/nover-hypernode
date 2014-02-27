@@ -19,6 +19,7 @@ help += 'mkdir \t-- create a folder.\n';
 help += '\n--- Networking ---\n';
 help += 'pkg \t-- package management.\n';
 help += 'curl \t-- send HTTP/HTTPS requests.\n';
+help += 'wget \t-- download binary resources.\n';
 help += 'ifconfig \t-- show IP address.\n';
 
 help += '\n--- File Transfer ---\n';
