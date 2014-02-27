@@ -18,13 +18,13 @@ var installPkg = function (pkgs) {
   'use strict';
   npm.load({}, function (err) {
     if (err) {
-      console.error(err);
+      console.log(err);
       return;
     }
 
     npm.commands.install(pkgs, function (er, data) {
       if (er) {
-        console.error(er);
+        console.log(er);
       }
       console.log(data);
     });
@@ -40,13 +40,13 @@ var uninstallPkg = function (pkgs) {
   'use strict';
   npm.load({}, function (err) {
     if (err) {
-      console.error(err);
+      console.log(err);
       return;
     }
 
     npm.commands.uninstall(pkgs, function (er, data) {
       if (er) {
-        console.error(er);
+        console.log(er);
       }
       console.log(data);
     });
