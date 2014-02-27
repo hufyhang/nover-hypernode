@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 var http = require('http');
+var https = require('https');
 var fs = require('fs');
 var pa = require('path');
 var CWD = process.env.HYPERNODE_CWD || __dirname;
@@ -9,6 +10,7 @@ if (process.argv.length < 3) {
   process.exit(0);
 }
 
+var protocol;
 var opts = [];
 var count = 2;
 var url = process.argv[count];
@@ -81,7 +83,12 @@ var callback = function(response) {
       var newUrl = response.headers.location || url;
       opts[opts.indexOf('-L')] = null;
       str = '';
-      http.get(newUrl, callback).end();
+
+      protocol = /^http:\/\/.+$/.test(newUrl)
+        ? http
+        : https;
+
+      protocol.get(newUrl, callback).end();
     }
   });
 
@@ -102,5 +109,9 @@ var callback = function(response) {
   });
 };
 
-http.get(url, callback).end();
+protocol = /^http:\/\/.+$/.test(url)
+  ? http
+  : https;
+
+protocol.get(url, callback).end();
 
