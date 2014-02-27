@@ -148,6 +148,12 @@ var exec = function (data, socket) {
   'use strict';
 
   var cmd = data.command.trim().match(/[\w\d-\*\.&]+|"(?:\\"|[^"])+"/g);
+
+  // trim leading and trailing double quotes
+  for (var index = 0, end = cmd.length; index !== end; ++index) {
+    cmd[index] = cmd[index].replace(/^\"|\"$/g, "");
+  }
+
   // var cmd = data.command.trim().split(' ');
   var runFlag = false;
 

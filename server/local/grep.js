@@ -12,10 +12,12 @@ var roots = [];
 
 var readSearchLines = function (filename, data) {
   'use strict';
+  var count = 0;
   var lines = data.split('\n');
   lines.forEach(function (line) {
+    ++count;
     if (pattern.test(line)) {
-      console.log(pa.basename(filename) + ': ' + line);
+      console.log(pa.basename(filename) + ' (' + count + '): ' + line);
     }
   });
 };
