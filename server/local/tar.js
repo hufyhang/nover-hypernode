@@ -12,7 +12,7 @@ if (argv.length < 3) {
 
 var compress = function (tarball, tgt) {
   'use strict';
-  var tar = new targz().compress(tarball, tgt, function (err) {
+  var tar = new targz().compress(tgt, tarball, function (err) {
     if (err) {
       console.error(err);
     }
@@ -55,6 +55,8 @@ if (mode === 'c') {
 else if (mode === 'x') {
   if (!tgt) {
     tgt = pa.resolve(CWD, pa.dirname(tarball), pa.basename(tarball, '.tar.gz'));
+  } else {
+    tgt = pa.resolve(CWD, tgt);
   }
 
   extract(tarball, tgt);
