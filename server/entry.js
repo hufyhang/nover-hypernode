@@ -147,7 +147,7 @@ var queueJob = function (cmd, data, offset, socket) {
 var exec = function (data, socket) {
   'use strict';
 
-  var cmd = data.command.trim().match(/[\w\d-\*\.&]+|"(?:\\"|[^"])+"/g);
+  var cmd = data.command.trim().match(/[\w\d-\/\'\*\.&]+|"(?:\\"|[^"])+"/g);
 
   // trim leading and trailing double quotes
   for (var index = 0, end = cmd.length; index !== end; ++index) {
