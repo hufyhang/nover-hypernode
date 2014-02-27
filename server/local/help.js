@@ -6,6 +6,7 @@ help += 'cat \t-- concatenate files.\n';
 help += 'cd \t-- change directory.\n';
 help += 'ls \t-- list files.\n';
 help += 'tree \t-- show directory tree.\n';
+help += 'grep \t-- search file contents.\n';
 help += 'exit \t-- exit HyperNode.\n';
 
 help += '\n--- File/Folder Management---\n';
