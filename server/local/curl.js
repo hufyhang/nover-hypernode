@@ -37,9 +37,12 @@ var fetchHeader = function (response) {
   return str;
 };
 
-var savePage = function (url, file, data) {
+var savePage = function (binary, url, file, data) {
   'use strict';
   var filename;
+  var encoding = binary === true
+    ? 'binary'
+    : 'utf-8';
 
   if (!data) {
     data = file;
@@ -56,7 +59,7 @@ var savePage = function (url, file, data) {
 
   filename = pa.resolve(CWD, filename);
 
-  fs.writeFile(filename, data, function (err) {
+  fs.writeFile(filename, data, encoding, function (err) {
     if (err) {
       console.error(err);
     }
@@ -67,6 +70,11 @@ var callback = function(response) {
   'use strict';
   var str = '';
   var headerFetched = false;
+  var isBinary = ~opts.indexOf('-b');
+
+  if (isBinary) {
+    response.setEncoding('binary');
+  }
 
   response.on('data', function (chunk) {
     if (~opts.indexOf('-i')) {
@@ -88,12 +96,7 @@ var callback = function(response) {
         ? http
         : https;
 
-      protocol.get(newUrl, function (res) {
-        if (~opts.indexOf('-b')) {
-          res.setEncoding('binary');
-        }
-        callback(res);
-      }).end();
+      protocol.get(newUrl, callback).end();
     }
   });
 
@@ -104,9 +107,9 @@ var callback = function(response) {
     else if (~opts.indexOf('-o')) {
       var filename = process.argv[++count];
       if (filename) {
-        savePage(url, filename, str);
+        savePage(isBinary, url, filename, str);
       } else {
-        savePage(url, str);
+        savePage(isBinary, url, str);
       }
     } else {
       console.log(str);
@@ -118,11 +121,5 @@ protocol = /^http:\/\/.+$/.test(url)
   ? http
   : https;
 
-  protocol.get(url, function (res) {
-    'use strict';
-    if (~opts.indexOf('-b')) {
-      res.setEncoding('binary');
-    }
-    callback(res);
-  }).end();
+  protocol.get(url, callback).end();
 
