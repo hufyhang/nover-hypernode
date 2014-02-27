@@ -16,7 +16,7 @@ for (var index = 3, total = argv.length; index !== total; ++index) {
 
 var installPkg = function (pkgs) {
   'use strict';
-  npm.load(npm.config, function (err) {
+  npm.load({}, function (err) {
     if (err) {
       console.error(err);
       return;
@@ -38,7 +38,7 @@ var installPkg = function (pkgs) {
 
 var uninstallPkg = function (pkgs) {
   'use strict';
-  npm.load(npm.config, function (err) {
+  npm.load({}, function (err) {
     if (err) {
       console.error(err);
       return;
