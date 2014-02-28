@@ -67,6 +67,20 @@ var basis = {
       return true;
     }
 
+    // less command
+    argv = cmd.match(/^less\ ?(.+)?$/);
+    if (argv) {
+      var filename = argv[1];
+      if (!filename) {
+        console.log('Usage: less [filename]');
+        socket.emit('empty');
+        return true;
+      } else {
+        socket.emit('less', filename);
+        return true;
+      }
+    }
+
     // push command
     argv = cmd.match(/^push\ ?(.+)?$/);
     if (argv) {
@@ -268,4 +282,10 @@ socket.on('task.notify', function (data) {
   iface.clearLine();
   process.stdout.write(data.toString());
   iface.clearLine();
+});
+
+socket.on('less.show', function (data) {
+  'use strict';
+  var less = require('../lib/less').less;
+  less(data);
 });
