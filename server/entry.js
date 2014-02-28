@@ -317,9 +317,8 @@ exports.__require = function (data) {
 
     socket.on('less', function (filename) {
       filename = pa.resolve(process.env.HYPERNODE_CWD, filename);
-      fs.readFile(filename, 'utf-8', function (data) {
-        socket.emit('less.show', data);
-      });
+      var content = fs.readFileSync(filename, 'utf-8');
+      socket.emit('less.show', content);
     });
 
     // add socket.io-steam for file uploading

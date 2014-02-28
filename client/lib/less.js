@@ -2,6 +2,9 @@ var blessed = require('blessed');
 
 var less = function (data) {
   'use strict';
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+
   // Create a screen object.
   var screen = blessed.screen();
 
@@ -16,6 +19,7 @@ var less = function (data) {
   screen.append(box);
 
   screen.key(['escape', 'q'], function(ch, key) {
+    process.stdin.setRawMode(false);
     return process.exit(0);
   });
 
