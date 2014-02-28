@@ -315,6 +315,13 @@ exports.__require = function (data) {
       socket.emit('ok', tasksInformation());
     });
 
+    socket.on('less', function (filename) {
+      filename = pa.resolve(process.env.HYPERNODE_CWD, filename);
+      fs.readFile(filename, 'utf-8', function (data) {
+        socket.emit('less.show', data);
+      });
+    });
+
     // add socket.io-steam for file uploading
     ss(socket).on('push', function (stream, data) {
       var filename = pa.resolve(process.env.HYPERNODE_CWD,
