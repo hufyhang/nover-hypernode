@@ -61,6 +61,12 @@ var basis = {
       process.exit(0);
     }
 
+    if (/^~/.test(cmd)) {
+      console.log('Invalid command');
+      socket.emit('empty');
+      return true;
+    }
+
     // push command
     argv = cmd.match(/^push\ ?(.+)?$/);
     if (argv) {
