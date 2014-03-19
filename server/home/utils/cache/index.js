@@ -25,13 +25,14 @@ var showInfo = function () {
   console.log(JSON.stringify(json));
 };
 
-var saveCache = function (url, data) {
+var saveCache = function (data) {
   'use strict';
-  var filename = pa.resolve(sys.dist, url, ++info.times);
-  fs.write(filename, data, showInfo);
+  var file = ++info.times + '.html';
+  var filename = pa.resolve(sys.dist, file);
+  fs.writeFile(filename, data, showInfo);
 };
 
-var cacheUrl = function (url, dist) {
+var cacheUrl = function (url) {
   'use strict';
   var content = '';
   protocol.get(url, function (res) {
@@ -40,7 +41,7 @@ var cacheUrl = function (url, dist) {
     });
 
     res.on('end', function () {
-
+      saveCache(content);
     });
   }).end();
 };
@@ -70,20 +71,15 @@ if (isNumber) {
   }
 }
 
-// check and create dist folders
-if (!fs.existsSync(dist)) {
-  fs.mkdirSync(dist);
+// check and create dist folder
+if (!fs.existsSync(sys.dist)) {
+  fs.mkdirSync(sys.dist);
 }
 
-var urlDist = pa.resolve(dist, info.url);
-if (!fs.existsSync(urlDist)) {
-  fs.mkdirSync(urlDist);
-}
-
-cacheUrl(info.url, sys.dist);
+cacheUrl(info.url);
 
 setInterval(function () {
   'use strict';
-  cacheUrl(info.url, sys.dist);
+  cacheUrl(info.url);
 }, sys.delay);
 
