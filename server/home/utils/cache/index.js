@@ -21,7 +21,7 @@ var sys = {
 var showInfo = function () {
   'use strict';
   var json = info;
-  json.latest = new Date();
+  json.latest = (new Date()).toString();
   console.log(JSON.stringify(json));
 };
 
