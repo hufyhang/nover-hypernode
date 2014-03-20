@@ -52,8 +52,13 @@ if (argv.length < 3) {
 }
 
 var url = argv[2];
+var hasProtocol = /^http[s]?:\/\//.test(url);
 var isHttps = /^https:\/\/.+$/.test(url);
-if (isHttps) {
+if (!hasProtocol) {
+  // add http by default
+  url = 'http://' + url;
+}
+else if (isHttps) {
   protocol = https;
 }
 info.url = url;
