@@ -311,6 +311,7 @@ exports.__require = function (data) {
           ++count;
         }
       }
+      msg += 'Total: ' + count;
       socket.emit('stdout', msg);
       socket.emit('ok', tasksInformation());
     });
